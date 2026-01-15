@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель | HOROSCASE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container {
+            padding: 100px 20px 50px;
+            min-height: 100vh;
+            background: #0a0a0a;
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .admin-header h1 {
+            color: #6c63ff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .admin-header p {
+            color: #aaa;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .admin-stat {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            transition: transform 0.3s;
+        }
+        
+        .admin-stat:hover {
+            transform: translateY(-5px);
+        }
+        
+        .admin-stat h3 {
+            font-size: 2rem;
+            color: #6c63ff;
+            margin-bottom: 10px;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .admin-tab {
+            padding: 15px 25px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .admin-tab.active {
+            background: #6c63ff;
+            color: white;
+            border-color: #6c63ff;
+        }
+        
+        .admin-content {
+            display: none;
+        }
+        
+        .admin-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .admin-card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        
+        .admin-card h3 {
+            margin-bottom: 25px;
+            color: #6c63ff;
+            font-size: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-control label {
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        
+        .form-control input,
+        .form-control select,
+        .form-control textarea {
+            padding: 12px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .form-control textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn-admin {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #6c63ff, #ff6584);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .btn-admin:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .admin-table th,
+        .admin-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        
+        .admin-table th {
+            background: rgba(108, 99, 255, 0.1);
+            color: #6c63ff;
+            font-weight: 600;
+        }
+        
+        .admin-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-admin {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .badge-user {
+            background: rgba(108, 99, 255, 0.2);
+            color: #6c63ff;
+        }
+        
+        .badge-banned {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn-edit {
+            background: rgba(108, 99, 255, 0.2);
+            color: #6c63ff;
+        }
+        
+        .btn-ban {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        
+        .btn-delete {
+            background: rgba(253, 126, 20, 0.2);
+            color: #fd7e14;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background: #6c63ff;
+            color: white;
+        }
+        
+        .logs-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-item {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .log-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .log-action {
+            color: #6c63ff;
+            margin: 5px 0;
+        }
+        
+        .log-user {
+            color: #aaa;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-tabs {
+                flex-direction: column;
+            }
+            
+            .admin-tab {
+                text-align: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .unauthorized {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .unauthorized h2 {
+            color: #ff4757;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-gem"></i>
+                <span>HOROSCASE</span>
+            </a>
+            <div class="nav-menu">
+                <a href="admin.html"><i class="fas fa-crown"></i> Админка</a>
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-crown"></i> Административная панель</h1>
+            <p>Управление сайтом Horoscase</p>
+        </div>
+        
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <h3 id="totalUsers">0</h3>
+                <p>Всего пользователей</p>
+            </div>
+            <div class="admin-stat">
+                <h3 id="totalCases">0</h3>
+                <p>Кейсов в системе</p>
+            </div>
+            <div class="admin-stat">
+                <h3 id="todayTransactions">0</h3>
+                <p>Транзакций сегодня</p>
+            </div>
+            <div class="admin-stat">
+                <h3 id="bannedUsers">0</h3>
+                <p>Заблокированных</p>
+            </div>
+        </div>
+        
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchAdminTab('users')">
+                <i class="fas fa-users"></i> Пользователи
+            </button>
+            <button class="admin-tab" onclick="switchAdminTab('cases')">
+                <i class="fas fa-box"></i> Кейсы
+            </button>
+            <button class="admin-tab" onclick="switchAdminTab('items')">
+                <i class="fas fa-gem"></i> Предметы
+            </button>
+            <button class="admin-tab" onclick="switchAdminTab('transactions')">
+                <i class="fas fa-exchange-alt"></i> Транзакции
+            </button>
+            <button class="admin-tab" onclick="switchAdminTab('bans')">
+                <i class="fas fa-ban"></i> Блокировки
+            </button>
+            <button class="admin-tab" onclick="switchAdminTab('logs')">
+                <i class="fas fa-history"></i> Логи
+            </button>
+        </div>
+        
+        <!-- Секция пользователей -->
+        <div id="usersTab" class="admin-content active">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Поиск по email, имени или IP..." 
+                       oninput="searchUsers(this.value)">
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterUsers('all')">Все</button>
+                <button class="filter-btn" onclick="filterUsers('admin')">Админы</button>
+                <button class="filter-btn" onclick="filterUsers('verified')">Подтвержденные</button>
+                <button class="filter-btn" onclick="filterUsers('banned')">Заблокированные</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Имя</th>
+                            <th>Роль</th>
+                            <th>IP</th>
+                            <th>Регистрация</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <!-- Данные загружаются через JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="admin-card">
+                <h3><i class="fas fa-user-plus"></i> Добавить пользователя</h3>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Email</label>
+                        <input type="email" id="newUserEmail" placeholder="user@example.com">
+                    </div>
+                    <div class="form-control">
+                        <label>Имя пользователя</label>
+                        <input type="text" id="newUserName" placeholder="Nickname">
+                    </div>
+                    <div class="form-control">
+                        <label>Пароль</label>
+                        <input type="password" id="newUserPassword" placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Роль</label>
+                        <select id="newUserRole">
+                            <option value="user">Пользователь</option>
+                            <option value="admin">Администратор</option>
+                            <option value="moderator">Модератор</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-admin" onclick="addNewUser()">
+                    <i class="fas fa-plus"></i> Добавить пользователя
+                </button>
+            </div>
+        </div>
+        
+        <!-- Секция кейсов -->
+        <div id="casesTab" class="admin-content">
+            <div class="admin-card">
+                <h3><i class="fas fa-box"></i> Добавить новый кейс</h3>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Название кейса</label>
+                        <input type="text" id="caseName" placeholder="Например: Operation Phoenix Case">
+                    </div>
+                    <div class="form-control">
+                        <label>Игра</label>
+                        <select id="caseGame">
+                            <option value="csgo">CS:GO</option>
+                            <option value="dota2">Dota 2</option>
+                            <option value="rust">Rust</option>
+                            <option value="tf2">Team Fortress 2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Цена (₽)</label>
+                        <input type="number" id="casePrice" placeholder="50">
+                    </div>
+                    <div class="form-control">
+                        <label>Редкость</label>
+                        <select id="caseRarity">
+                            <option value="common">Обычный</option>
+                            <option value="rare">Редкий</option>
+                            <option value="epic">Эпический</option>
+                            <option value="legendary">Легендарный</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Описание</label>
+                        <textarea id="caseDescription" placeholder="Описание кейса и возможных предметов..."></textarea>
+                    </div>
+                </div>
+                <button class="btn-admin" onclick="addNewCase()">
+                    <i class="fas fa-plus"></i> Добавить кейс
+                </button>
+            </div>
+            
+            <div class="admin-card">
+                <h3><i class="fas fa-boxes"></i> Существующие кейсы</h3>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Игра</th>
+                                <th>Цена</th>
+                                <th>Продано</th>
+                                <th>Доход</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="casesTable">
+                            <!-- Данные загружаются через JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция банов -->
+        <div id="bansTab" class="admin-content">
+            <div class="admin-card">
+                <h3><i class="fas fa-ban"></i> Заблокировать пользователя</h3>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Email пользователя</label>
+                        <input type="email" id="banEmail" placeholder="user@example.com">
+                    </div>
+                    <div class="form-control">
+                        <label>Или IP адрес</label>
+                        <input type="text" id="banIP" placeholder="192.168.1.1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Причина блокировки</label>
+                        <select id="banReason">
+                            <option value="scam">Мошенничество</option>
+                            <option value="spam">Спам</option>
+                            <option value="cheat">Читы/Обман</option>
+                            <option value="toxicity">Токсичное поведение</option>
+                            <option value="other">Другая причина</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label>Срок блокировки</label>
+                        <select id="banDuration">
+                            <option value="1">1 день</option>
+                            <option value="7">7 дней</option>
+                            <option value="30">30 дней</option>
+                            <option value="permanent">Навсегда</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-control">
+                        <label>Комментарий</label>
+                        <textarea id="banComment" placeholder="Дополнительная информация..."></textarea>
+                    </div>
+                </div>
+                <button class="btn-admin btn-danger" onclick="banUser()">
+                    <i class="fas fa-ban"></i> Заблокировать
+                </button>
+            </div>
+            
+            <div class="admin-card">
+                <h3><i class="fas fa-list"></i> Активные блокировки</h3>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Пользователь/IP</th>
+                                <th>Причина</th>
+                                <th>Истекает</th>
+                                <th>Администратор</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bansTable">
+                            <!-- Данные загружаются через JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция логов -->
+        <div id="logsTab" class="admin-content">
+            <div class="admin-card">
+                <h3><i class="fas fa-history"></i> Лог действий</h3>
+                <div class="logs-list" id="adminLogs">
+                    <!-- Логи загружаются через JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+    <script>
+        // Проверка админских прав
+        function checkAdminAccess() {
+            const userEmail = localStorage.getItem('user_email');
+            if (userEmail !== 'frondoffical@gmail.com') {
+                document.querySelector('.admin-container').innerHTML = `
+                    <div class="unauthorized">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Доступ запрещен!</h2>
+                        <p>Эта панель доступна только администратору сайта.</p>
+                        <a href="index.html" class="btn-primary" style="display: inline-block; margin-top: 20px;">
+                            На главную
+                        </a>
+                    </div>
+                `;
+                return false;
+            }
+            return true;
+        }
+        
+        // Переключение вкладок
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.admin-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`[onclick="switchAdminTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+        
+        // Выход
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        // Проверяем доступ при загрузке
+        if (checkAdminAccess()) {
+            // Загружаем статистику
+            loadAdminStats();
+            loadUsers();
+            loadCases();
+            loadBans();
+            loadLogs();
+        }
+    </script>
+</body>
+</html>
