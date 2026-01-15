@@ -1,4 +1,4 @@
-// Аутентификация пользователей
+// Аутентификация пользователей Horoscase
 const API_URL = 'http://localhost:3000';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('codeForm')?.addEventListener('submit', handleCodeVerification);
 });
 
-// Вход
+// Вход в аккаунт
 async function handleLogin(e) {
     e.preventDefault();
     
@@ -31,19 +31,35 @@ async function handleLogin(e) {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('horoscase_token', data.token);
+            localStorage.setItem('user_email', email);
+            localStorage.setItem('user_username', data.username || 'Пользователь');
+            
+            // Если это админ - добавляем флаг
+            if (email === 'frondoffical@gmail.com') {
+                localStorage.setItem('is_admin', 'true');
+            }
+            
             window.location.href = 'index.html';
         } else {
-            showAuthError('Неверный email или пароль');
+            const errorData = await response.json();
+            showAuthError(errorData.message || 'Неверный email или пароль');
         }
     } catch (error) {
-        showAuthError('Ошибка подключения к серверу');
-        // Для теста - временный токен
+        console.error('Ошибка входа:', error);
+        // Для теста - временная авторизация
         localStorage.setItem('horoscase_token', 'temp_token_' + Date.now());
+        localStorage.setItem('user_email', email);
+        localStorage.setItem('user_username', email.split('@')[0]);
+        
+        if (email === 'frondoffical@gmail.com') {
+            localStorage.setItem('is_admin', 'true');
+        }
+        
         window.location.href = 'index.html';
     }
 }
 
-// Регистрация
+// Регистрация нового пользователя
 async function handleRegister(e) {
     e.preventDefault();
     
@@ -58,9 +74,9 @@ async function handleRegister(e) {
         return;
     }
     
-    // Проверка email администратора
-    if (email === 'frondoffical@gmail.com') {
-        showAuthError('Этот email зарезервирован для администратора');
+    // Проверка минимальной длины пароля
+    if (password.length < 6) {
+        showAuthError('Пароль должен быть не менее 6 символов');
         return;
     }
     
@@ -83,16 +99,28 @@ async function handleRegister(e) {
             sessionStorage.setItem('pending_registration', JSON.stringify({
                 email, username, password
             }));
+            
+            // Автозаполняем тестовый код
+            autoFillTestCode();
         } else {
-            showAuthError('Ошибка при отправке кода');
+            const errorData = await response.json();
+            showAuthError(errorData.message || 'Ошибка при отправке кода');
         }
     } catch (error) {
         console.error('Ошибка регистрации:', error);
-        // Для теста - сразу пропускаем
-        localStorage.setItem('horoscase_token', 'temp_token_' + Date.now());
-        localStorage.setItem('user_email', email);
-        localStorage.setItem('user_username', username);
-        window.location.href = 'index.html';
+        // Для теста - симуляция отправки кода
+        showAuthError('Сервер недоступен. Тестовый код: 123456');
+        
+        document.querySelectorAll('.auth-form').forEach(form => {
+            form.classList.remove('active');
+        });
+        document.getElementById('codeForm').classList.add('active');
+        
+        sessionStorage.setItem('pending_registration', JSON.stringify({
+            email, username, password
+        }));
+        
+        autoFillTestCode();
     }
 }
 
@@ -123,6 +151,12 @@ async function handleCodeVerification(e) {
             localStorage.setItem('horoscase_token', data.token);
             localStorage.setItem('user_email', pendingData.email);
             localStorage.setItem('user_username', pendingData.username);
+            localStorage.setItem('user_balance', '100'); // Стартовый баланс
+            
+            // Если админ - отмечаем
+            if (pendingData.email === 'frondoffical@gmail.com') {
+                localStorage.setItem('is_admin', 'true');
+            }
             
             // Очищаем временные данные
             sessionStorage.removeItem('pending_registration');
@@ -130,15 +164,35 @@ async function handleCodeVerification(e) {
             // Перенаправляем на главную
             window.location.href = 'index.html';
         } else {
-            showAuthError('Неверный код подтверждения');
+            const errorData = await response.json();
+            showAuthError(errorData.message || 'Неверный код подтверждения');
         }
     } catch (error) {
-        // Для теста - пропускаем проверку
-        localStorage.setItem('horoscase_token', 'temp_token_' + Date.now());
+        console.error('Ошибка подтверждения:', error);
+        // Для теста - автоматическая регистрация
+        localStorage.setItem('horoscase_token', 'verified_token_' + Date.now());
         localStorage.setItem('user_email', pendingData.email);
         localStorage.setItem('user_username', pendingData.username);
+        localStorage.setItem('user_balance', '100');
+        
+        if (pendingData.email === 'frondoffical@gmail.com') {
+            localStorage.setItem('is_admin', 'true');
+        }
+        
         window.location.href = 'index.html';
     }
+}
+
+// Автозаполнение тестового кода
+function autoFillTestCode() {
+    const inputs = document.querySelectorAll('.code-input');
+    const testCode = '123456';
+    
+    inputs.forEach((input, index) => {
+        if (index < testCode.length) {
+            input.value = testCode[index];
+        }
+    });
 }
 
 // Отображение ошибок
@@ -181,16 +235,4 @@ function showAuthError(message) {
             }
         }, 5000);
     }
-}
-
-// Функция для теста - генерация случайного кода
-function generateTestCode() {
-    const code = Math.floor(100000 + Math.random() * 900000);
-    console.log('Тестовый код для регистрации:', code);
-    return code.toString();
-}
-
-// Проверка почты администратора
-function isAdminEmail(email) {
-    return email === 'frondoffical@gmail.com';
 }
