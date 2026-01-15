@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOROSCASE - Торговая площадка кейсов</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-gem"></i>
+                <span>HOROSCASE</span>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="#"><i class="fas fa-home"></i> Главная</a>
+                <a href="#cases"><i class="fas fa-box"></i> Кейсы</a>
+                <a href="#market"><i class="fas fa-store"></i> Маркет</a>
+                <a href="#leaderboard"><i class="fas fa-trophy"></i> Топ</a>
+                <a href="#inventory"><i class="fas fa-backpack"></i> Инвентарь</a>
+                <div class="nav-auth">
+                    <a href="auth.html" class="btn-login"><i class="fas fa-user"></i> Войти</a>
+                    <a href="auth.html?register=true" class="btn-register">Регистрация</a>
+                </div>
+            </div>
+            
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Открывай кейсы. Получай скины. Стань лидером.</h1>
+                <p>CS:GO, Dota 2, Rust и другие игры</p>
+                <div class="hero-buttons">
+                    <a href="#cases" class="btn-primary">Открыть кейс <i class="fas fa-arrow-right"></i></a>
+                    <a href="#market" class="btn-secondary">Торговать <i class="fas fa-exchange-alt"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-box-open"></i>
+                    <h3>1,234</h3>
+                    <p>Кейсов открыто сегодня</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>5,678</h3>
+                    <p>Активных трейдеров</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gem"></i>
+                    <h3>890</h3>
+                    <p>Редких предметов</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cases-preview" id="cases">
+            <h2>Популярные кейсы</h2>
+            <div class="cases-grid" id="casesGrid">
+                <!-- Сюда загружаются кейсы -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-gem"></i>
+                <span>HOROSCASE</span>
+            </div>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-steam"></i> Steam</a>
+                <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="#"><i class="fab fa-discord"></i> Discord</a>
+            </div>
+            <p class="copyright">© 2024 HOROSCASE. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
