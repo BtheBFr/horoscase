@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход / Регистрация | HOROSCASE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 50px;
+            background: linear-gradient(rgba(10,10,10,0.9), rgba(10,10,10,0.9)), 
+                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+        }
+        
+        .auth-box {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .auth-tab.active {
+            color: #6c63ff;
+            border-bottom: 3px solid #6c63ff;
+            margin-bottom: -2px;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6c63ff;
+        }
+        
+        .btn-auth {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #6c63ff, #ff6584);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .btn-auth:hover {
+            transform: translateY(-3px);
+        }
+        
+        .code-inputs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .code-input {
+            flex: 1;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .code-input:focus {
+            border-color: #6c63ff;
+            outline: none;
+        }
+        
+        .auth-divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: #666;
+        }
+        
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #333;
+        }
+        
+        .auth-divider::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #333;
+        }
+        
+        .btn-guest {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid #6c63ff;
+            border-radius: 10px;
+            color: #6c63ff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-guest:hover {
+            background: rgba(108, 99, 255, 0.1);
+        }
+        
+        .auth-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 165, 2, 0.1);
+            border-left: 4px solid #ffa502;
+            border-radius: 5px;
+            color: #ffa502;
+        }
+        
+        @media (max-width: 480px) {
+            .auth-box {
+                padding: 30px 20px;
+            }
+            
+            .code-input {
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-gem"></i>
+                <span>HOROSCASE</span>
+            </a>
+            <a href="index.html" class="btn-secondary">На главную</a>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">Вход</button>
+                <button class="auth-tab" onclick="switchTab('register')">Регистрация</button>
+            </div>
+            
+            <!-- Форма входа -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="ваш@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                
+                <div class="auth-divider">или</div>
+                
+                <button type="button" class="btn-guest" onclick="continueAsGuest()">
+                    <i class="fas fa-user-secret"></i> Продолжить как гость
+                </button>
+            </form>
+            
+            <!-- Форма регистрации -->
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="ваш@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerUsername">Имя пользователя</label>
+                    <input type="text" id="registerUsername" class="form-input" placeholder="Придумайте никнейм" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">Пароль</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="••••••••" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">Подтверждение пароля</label>
+                    <input type="password" id="registerPasswordConfirm" class="form-input" placeholder="••••••••" required>
+                </div>
+                
+                <div class="auth-info">
+                    <i class="fas fa-info-circle"></i>
+                    На почту придет код подтверждения
+                </div>
+                
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-user-plus"></i> Зарегистрироваться
+                </button>
+            </form>
+            
+            <!-- Форма ввода кода -->
+            <form id="codeForm" class="auth-form">
+                <h3 style="text-align: center; margin-bottom: 20px;">Код подтверждения</h3>
+                <p style="text-align: center; color: #aaa; margin-bottom: 30px;">
+                    Мы отправили код на вашу почту
+                </p>
+                
+                <div class="code-inputs">
+                    <input type="text" class="code-input" maxlength="1" data-index="0" oninput="moveToNext(this)">
+                    <input type="text" class="code-input" maxlength="1" data-index="1" oninput="moveToNext(this)">
+                    <input type="text" class="code-input" maxlength="1" data-index="2" oninput="moveToNext(this)">
+                    <span style="color: #666; align-self: center;">-</span>
+                    <input type="text" class="code-input" maxlength="1" data-index="3" oninput="moveToNext(this)">
+                    <input type="text" class="code-input" maxlength="1" data-index="4" oninput="moveToNext(this)">
+                    <input type="text" class="code-input" maxlength="1" data-index="5" oninput="moveToNext(this)">
+                </div>
+                
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-check-circle"></i> Подтвердить
+                </button>
+                
+                <p style="text-align: center; margin-top: 20px; color: #666;">
+                    Не получили код? 
+                    <a href="#" onclick="resendCode()" style="color: #6c63ff;">Отправить снова</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        function switchTab(tabName) {
+            // Переключение табов
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Активация выбранного таба
+            if (tabName === 'login') {
+                document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:nth-child(2)').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+        
+        function moveToNext(input) {
+            const index = parseInt(input.dataset.index);
+            const inputs = document.querySelectorAll('.code-input');
+            
+            // Переход к следующему полю
+            if (input.value.length === 1 && index < 5) {
+                inputs[index + 1].focus();
+            }
+            
+            // Возврат к предыдущему полю при удалении
+            if (input.value.length === 0 && index > 0) {
+                inputs[index - 1].focus();
+            }
+        }
+        
+        function continueAsGuest() {
+            localStorage.setItem('guest_mode', 'true');
+            window.location.href = 'index.html';
+        }
+        
+        function resendCode() {
+            alert('Код отправлен повторно!');
+            // Здесь будет реальная отправка кода
+        }
+        
+        // Проверяем параметры URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('register') === 'true') {
+            switchTab('register');
+        }
+    </script>
+</body>
+</html>
