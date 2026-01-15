@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой инвентарь | HOROSCASE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .inventory-container {
+            padding: 100px 20px 50px;
+            min-height: 100vh;
+            background: #0a0a0a;
+        }
+        
+        .inventory-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .inventory-header h1 {
+            color: #6c63ff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 0 auto 40px;
+            text-align: center;
+            color: white;
+        }
+        
+        .balance-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .btn-deposit {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .btn-deposit:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .inventory-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 10px 25px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 25px;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #6c63ff;
+            color: white;
+            border-color: #6c63ff;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .item-card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .item-card:hover {
+            transform: translateY(-5px);
+            border-color: #6c63ff;
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
+        }
+        
+        .item-rarity {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .rarity-common { background: #555; color: white; }
+        .rarity-rare { background: #00a8ff; color: white; }
+        .rarity-epic { background: #9c88ff; color: white; }
+        .rarity-legendary { background: #fbc531; color: black; }
+        
+        .item-image {
+            height: 120px;
+            background: linear-gradient(45deg, #222, #333);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .item-info {
+            padding: 20px;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .item-game {
+            color: #6c63ff;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .item-value {
+            color: #fbc531;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-sell, .btn-gift {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.3s;
+        }
+        
+        .btn-sell {
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+        }
+        
+        .btn-gift {
+            background: rgba(108, 99, 255, 0.2);
+            color: #6c63ff;
+        }
+        
+        .btn-sell:hover, .btn-gift:hover {
+            opacity: 0.8;
+        }
+        
+        .empty-inventory {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-inventory i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-inventory h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .trade-history {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+        }
+        
+        .trade-history h3 {
+            margin-bottom: 20px;
+            color: #6c63ff;
+        }
+        
+        .trade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .trade-item:last-child {
+            border-bottom: none;
+        }
+        
+        .trade-type {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .type-buy { background: rgba(76, 217, 100, 0.2); color: #4cd964; }
+        .type-sell { background: rgba(255, 59, 48, 0.2); color: #ff3b30; }
+        .type-gift { background: rgba(88, 86, 214, 0.2); color: #5856d6; }
+        
+        @media (max-width: 768px) {
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .item-actions {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .inventory-filters {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-gem"></i>
+                <span>HOROSCASE</span>
+            </a>
+            <div class="nav-menu">
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="#cases"><i class="fas fa-box"></i> Кейсы</a>
+                <a href="inventory.html" class="active"><i class="fas fa-backpack"></i> Инвентарь</a>
+                <a href="#profile"><i class="fas fa-user"></i> Профиль</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="inventory-container">
+        <div class="inventory-header">
+            <h1><i class="fas fa-backpack"></i> Мой инвентарь</h1>
+            <p>Управление вашими предметами и скинами</p>
+        </div>
+        
+        <div class="balance-card">
+            <h3>Баланс</h3>
+            <div class="balance-amount" id="userBalance">0 ₽</div>
+            <button class="btn-deposit" onclick="showDepositModal()">
+                <i class="fas fa-plus"></i> Пополнить баланс
+            </button>
+        </div>
+        
+        <div class="inventory-filters">
+            <button class="filter-btn active" onclick="filterItems('all')">Все предметы</button>
+            <button class="filter-btn" onclick="filterItems('csgo')">CS:GO</button>
+            <button class="filter-btn" onclick="filterItems('dota2')">Dota 2</button>
+            <button class="filter-btn" onclick="filterItems('rust')">Rust</button>
+            <button class="filter-btn" onclick="filterItems('rare')">Редкие</button>
+            <button class="filter-btn" onclick="filterItems('tradable')">Для обмена</button>
+        </div>
+        
+        <div class="items-grid" id="inventoryGrid">
+            <!-- Предметы загружаются через JavaScript -->
+        </div>
+        
+        <div id="emptyInventory" class="empty-inventory" style="display: none;">
+            <i class="fas fa-box-open"></i>
+            <h3>Инвентарь пуст</h3>
+            <p>Откройте свой первый кейс, чтобы получить предметы!</p>
+            <a href="index.html#cases" class="btn-primary" style="margin-top: 20px;">
+                <i class="fas fa-box"></i> Открыть кейс
+            </a>
+        </div>
+        
+        <div class="trade-history">
+            <h3><i class="fas fa-history"></i> История операций</h3>
+            <div id="tradeHistory">
+                <!-- История загружается через JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно продажи -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-coins"></i> Продажа предмета</h3>
+            <p id="sellItemName"></p>
+            <div class="price-input">
+                <input type="number" id="sellPrice" placeholder="Цена в рублях">
+                <span>₽</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmSell()">Продать</button>
+                <button class="btn-secondary" onclick="closeModal('sellModal')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подарка -->
+    <div id="giftModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-gift"></i> Подарок</h3>
+            <p id="giftItemName"></p>
+            <input type="text" id="giftRecipient" placeholder="Email или ID получателя">
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmGift()">Подарить</button>
+                <button class="btn-secondary" onclick="closeModal('giftModal')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно пополнения -->
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-wallet"></i> Пополнение баланса</h3>
+            <div class="deposit-options">
+                <div class="deposit-option" onclick="selectAmount(100)">
+                    <span>100 ₽</span>
+                </div>
+                <div class="deposit-option" onclick="selectAmount(500)">
+                    <span>500 ₽</span>
+                </div>
+                <div class="deposit-option" onclick="selectAmount(1000)">
+                    <span>1000 ₽</span>
+                </div>
+                <div class="deposit-option" onclick="selectAmount(5000)">
+                    <span>5000 ₽</span>
+                </div>
+            </div>
+            <div class="custom-amount">
+                <input type="number" id="customAmount" placeholder="Другая сумма">
+                <span>₽</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="processDeposit()">Пополнить</button>
+                <button class="btn-secondary" onclick="closeModal('depositModal')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="inventory.js"></script>
+    <script>
+        // Мобильное меню
+        document.getElementById('menuToggle')?.addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+        
+        // Закрытие модальных окон
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        // Стили для модальных окон
+        const modalStyle = document.createElement('style');
+        modalStyle.textContent = `
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+            }
+            
+            .modal-content {
+                background: #1a1a1a;
+                padding: 40px;
+                border-radius: 20px;
+                border: 1px solid #333;
+                max-width: 400px;
+                width: 90%;
+            }
+            
+            .modal-content h3 {
+                margin-bottom: 20px;
+                color: #6c63ff;
+            }
+            
+            .price-input, .custom-amount {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 20px 0;
+            }
+            
+            .price-input input, .custom-amount input {
+                flex: 1;
+                padding: 15px;
+                background: #0a0a0a;
+                border: 1px solid #333;
+                border-radius: 10px;
+                color: white;
+                font-size: 1.1rem;
+            }
+            
+            .deposit-options {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin: 20px 0;
+            }
+            
+            .deposit-option {
+                padding: 20px;
+                background: #0a0a0a;
+                border: 2px solid #333;
+                border-radius: 10px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            
+            .deposit-option:hover {
+                border-color: #6c63ff;
+                background: rgba(108, 99, 255, 0.1);
+            }
+            
+            .modal-actions {
+                display: flex;
+                gap: 15px;
+                margin-top: 30px;
+            }
+            
+            .modal-actions button {
+                flex: 1;
+                padding: 15px;
+                border-radius: 10px;
+                border: none;
+                font-weight: bold;
+                cursor: pointer;
+                transition: transform 0.3s;
+            }
+            
+            .modal-actions button:hover {
+                transform: translateY(-2px);
+            }
+            
+            .btn-primary {
+                background: linear-gradient(45deg, #6c63ff, #ff6584);
+                color: white;
+            }
+            
+            .btn-secondary {
+                background: transparent;
+                border: 2px solid #6c63ff !important;
+                color: #6c63ff;
+            }
+            
+            #giftRecipient {
+                width: 100%;
+                padding: 15px;
+                background: #0a0a0a;
+                border: 1px solid #333;
+                border-radius: 10px;
+                color: white;
+                margin: 20px 0;
+            }
+        `;
+        document.head.appendChild(modalStyle);
+    </script>
+</body>
+</html>
