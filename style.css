@@ -19,7 +19,7 @@ body {
     padding: 0 20px;
 }
 
-/* НАВИГАЦИЯ - ИСПРАВЛЕННЫЕ КНОПКИ */
+/* НАВИГАЦИЯ - КНОПКИ В РЯД! */
 .navbar {
     background: rgba(15, 15, 15, 0.95);
     backdrop-filter: blur(10px);
@@ -28,7 +28,6 @@ body {
     width: 100%;
     top: 0;
     z-index: 1000;
-    padding: 0;
 }
 
 .nav-container {
@@ -55,7 +54,7 @@ body {
     font-size: 1.8rem;
 }
 
-/* ИСПРАВЛЕННЫЕ КНОПКИ ВХОДА/РЕГИСТРАЦИИ */
+/* ИСПРАВЛЕННЫЕ КНОПКИ - В РЯД! */
 .nav-menu {
     display: flex;
     gap: 25px;
@@ -70,21 +69,23 @@ body {
     gap: 8px;
     transition: color 0.3s;
     padding: 8px 0;
+    font-size: 0.95rem;
 }
 
 .nav-menu a:hover {
     color: #6c63ff;
 }
 
-/* КНОПКИ АВТОРИЗАЦИИ - ИСПРАВЛЕНО */
+/* КНОПКИ АВТОРИЗАЦИИ - РЯДОМ! */
 .nav-auth {
     display: flex;
-    gap: 12px;
+    gap: 10px; /* Маленький отступ между кнопками */
     align-items: center;
+    flex-direction: row !important; /* ВАЖНО: в ряд! */
 }
 
 .btn-login {
-    padding: 8px 20px;
+    padding: 8px 16px;
     border: 2px solid #6c63ff;
     border-radius: 20px;
     color: #6c63ff;
@@ -93,10 +94,11 @@ body {
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: transparent;
-    min-width: 80px;
-    justify-content: center;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    height: 36px;
 }
 
 .btn-login:hover {
@@ -105,7 +107,7 @@ body {
 }
 
 .btn-register {
-    padding: 8px 20px;
+    padding: 8px 16px;
     background: linear-gradient(45deg, #6c63ff, #ff6584);
     border-radius: 20px;
     color: white;
@@ -114,10 +116,11 @@ body {
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     border: none;
-    min-width: 120px;
-    justify-content: center;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    height: 36px;
 }
 
 .btn-register:hover {
@@ -127,7 +130,7 @@ body {
 
 /* КНОПКИ ДЛЯ АВТОРИЗОВАННЫХ */
 .btn-profile {
-    padding: 8px 15px;
+    padding: 6px 14px;
     background: rgba(108, 99, 255, 0.1);
     border-radius: 20px;
     border: 1px solid #6c63ff;
@@ -135,25 +138,61 @@ body {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.3s;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    height: 36px;
 }
 
 .btn-profile:hover {
     background: rgba(108, 99, 255, 0.2);
 }
 
+.btn-inventory {
+    padding: 6px 14px;
+    background: rgba(255, 165, 2, 0.1);
+    border-radius: 20px;
+    border: 1px solid #ffa502;
+    color: #ffa502;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    height: 36px;
+}
+
+.btn-admin {
+    padding: 6px 14px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 20px;
+    border: 1px solid #FFD700;
+    color: #FFD700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    height: 36px;
+}
+
 .btn-logout {
     background: transparent;
     border: 1px solid #ff4757;
     color: #ff4757;
-    padding: 8px 15px;
+    padding: 6px 14px;
     border-radius: 20px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.3s;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    height: 36px;
 }
 
 .btn-logout:hover {
@@ -205,13 +244,13 @@ body {
 
 .hero-buttons {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .btn-primary, .btn-secondary {
-    padding: 15px 30px;
+    padding: 14px 28px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: bold;
@@ -222,6 +261,7 @@ body {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    white-space: nowrap;
 }
 
 .btn-primary {
@@ -239,7 +279,7 @@ body {
     transform: translateY(-3px);
 }
 
-/* СТАТИСТИКА - ИСПРАВЛЕННАЯ БЕЗ ФЕЙКОВ */
+/* СТАТИСТИКА - БЕЗ ФЕЙКОВЫХ ЦИФР */
 .stats {
     padding: 80px 20px;
     background: #111;
@@ -278,11 +318,16 @@ body {
     margin: 10px 0;
     color: #fff;
     font-weight: 700;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .stat-card p {
     color: #aaa;
     font-size: 1rem;
+    margin-top: 10px;
 }
 
 /* КЕЙСЫ */
@@ -364,6 +409,10 @@ body {
     cursor: pointer;
     margin-top: 10px;
     transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-open-case:hover {
@@ -439,8 +488,9 @@ footer {
         flex-direction: column;
         padding: 40px 20px;
         transition: left 0.3s;
-        gap: 25px;
+        gap: 20px;
         align-items: flex-start;
+        z-index: 1000;
     }
     
     .nav-menu.active {
@@ -450,14 +500,15 @@ footer {
     .nav-auth {
         flex-direction: column;
         width: 100%;
-        max-width: 300px;
-        margin-top: 30px;
-        gap: 15px;
+        margin-top: 20px;
+        gap: 12px;
+        align-items: stretch;
     }
     
-    .btn-login, .btn-register {
+    .btn-login, .btn-register, .btn-profile, .btn-inventory, .btn-admin, .btn-logout {
         width: 100%;
         justify-content: center;
+        text-align: center;
     }
     
     .hero h1 {
@@ -467,6 +518,11 @@ footer {
     .hero-buttons {
         flex-direction: column;
         align-items: center;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
     }
     
     .stats-grid {
@@ -492,14 +548,12 @@ footer {
         grid-template-columns: 1fr;
     }
     
-    .hero-buttons .btn-primary,
-    .hero-buttons .btn-secondary {
-        width: 100%;
-        justify-content: center;
-    }
-    
     .nav-container {
         padding: 0 15px;
+    }
+    
+    .hero-buttons {
+        gap: 10px;
     }
 }
 
@@ -546,13 +600,29 @@ footer {
     to { transform: translateX(0); opacity: 1; }
 }
 
-/* БАЛАНС */
+/* БАДЖ БАЛАНСА */
 .balance-badge {
     background: linear-gradient(45deg, #6c63ff, #ff6584);
     color: white;
-    padding: 3px 10px;
-    border-radius: 12px;
+    padding: 3px 8px;
+    border-radius: 10px;
     font-size: 0.8rem;
     font-weight: bold;
-    margin-left: 8px;
+    margin-left: 6px;
+}
+
+/* ЛОАДЕР ДЛЯ СТАТИСТИКИ */
+.stat-loader {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #333;
+    border-top: 3px solid #6c63ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
