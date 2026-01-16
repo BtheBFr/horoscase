@@ -2,32 +2,20 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <!-- ВАЖНО: Правильный viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>HOROSCASE - Торговая площадка кейсов</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Мета-теги для мобильных -->
     <meta name="theme-color" content="#0a0a0a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         /* Дополнительные адаптивные стили */
         @media (max-width: 360px) {
-            .logo span {
-                font-size: 1.1rem;
-            }
-            
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-            
-            .hero p {
-                font-size: 0.9rem;
-            }
+            .logo span { font-size: 1.1rem; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero p { font-size: 0.9rem; }
         }
-        
-        /* Исправление горизонтального скролла */
         html, body {
             overflow-x: hidden;
             width: 100%;
@@ -50,7 +38,7 @@
                 <a href="#market"><i class="fas fa-store"></i> Маркет</a>
                 <a href="#leaderboard"><i class="fas fa-trophy"></i> Топ</a>
                 <div class="nav-auth" id="navAuth">
-                    <!-- Здесь будут кнопки Войти/Регистрация -->
+                    <!-- Кнопки загружаются через JS -->
                 </div>
             </div>
             
