@@ -1,0 +1,22 @@
+{
+  "csgo_cases": [
+    {
+      "id": "csgo_1",
+      "name": "Operation Phoenix Case",
+      "game": "csgo",
+      "price_rub": 50,
+      "color": "#FF6B35",
+      "icon": "fas fa-fire",
+      "description": "Шанс получить редкие ножи и перчатки"
+    },
+    {
+      "id": "csgo_2", 
+      "name": "Prisma Case",
+      "game": "csgo",
+      "price_rub": 75,
+      "color": "#9C88FF",
+      "icon": "fas fa-palette",
+      "description": "Красочные скины в стиле призмы"
+    }
+  ]
+}
