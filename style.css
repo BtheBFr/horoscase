@@ -1,12 +1,92 @@
-/* КНОПКИ НАВИГАЦИИ - ИСПРАВЛЕНО */
+/* БАЗОВЫЕ СТИЛИ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* КОНТЕЙНЕРЫ */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* НАВИГАЦИЯ */
+.navbar {
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #333;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #6c63ff;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.logo i {
+    font-size: 1.5rem;
+}
+
+/* КНОПКИ НАВИГАЦИИ - ИСПРАВЛЕНО (рядом, а не в столбик) */
+.nav-menu {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-menu a {
+    color: #ccc;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.nav-menu a:hover {
+    color: #6c63ff;
+}
+
 .nav-auth {
     display: flex;
-    gap: 8px; /* Уменьшил отступ */
+    gap: 8px;
     align-items: center;
 }
 
 .btn-login {
-    padding: 6px 12px; /* Уменьшил padding */
+    padding: 6px 12px;
     border: 2px solid #6c63ff;
     border-radius: 18px;
     color: #6c63ff;
@@ -15,20 +95,25 @@
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
-    gap: 5px; /* Уменьшил отступ между иконкой и текстом */
+    gap: 5px;
     background: transparent;
-    font-size: 0.85rem; /* Уменьшил шрифт */
+    font-size: 0.85rem;
     white-space: nowrap;
-    height: 32px; /* Фиксированная высота */
-    min-width: 60px; /* Минимальная ширина */
+    height: 32px;
+    min-width: 60px;
 }
 
 .btn-login i {
-    font-size: 0.9rem; /* Уменьшил иконку */
+    font-size: 0.9rem;
+}
+
+.btn-login:hover {
+    background: rgba(108, 99, 255, 0.1);
+    transform: translateY(-2px);
 }
 
 .btn-register {
-    padding: 6px 12px; /* Уменьшил padding */
+    padding: 6px 12px;
     background: linear-gradient(45deg, #6c63ff, #ff6584);
     border-radius: 18px;
     color: white;
@@ -37,16 +122,21 @@
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
-    gap: 5px; /* Уменьшил отступ */
+    gap: 5px;
     border: none;
-    font-size: 0.85rem; /* Уменьшил шрифт */
+    font-size: 0.85rem;
     white-space: nowrap;
-    height: 32px; /* Фиксированная высота */
-    min-width: 90px; /* Минимальная ширина */
+    height: 32px;
+    min-width: 90px;
 }
 
 .btn-register i {
-    font-size: 0.9rem; /* Уменьшил иконку */
+    font-size: 0.9rem;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
 }
 
 /* КНОПКИ ДЛЯ АВТОРИЗОВАННЫХ */
@@ -67,7 +157,7 @@
     background: rgba(108, 99, 255, 0.1);
     border: 1px solid #6c63ff;
     color: #6c63ff;
-    max-width: 120px; /* Ограничиваем ширину */
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -75,7 +165,7 @@
 .btn-profile span {
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 70px; /* Ограничиваем текст */
+    max-width: 70px;
 }
 
 .btn-inventory {
@@ -106,52 +196,8 @@
     min-width: 40px;
 }
 
-/* МОБИЛЬНАЯ ВЕРСИЯ КНОПОК */
-@media (max-width: 768px) {
-    .nav-auth {
-        gap: 6px;
-    }
-    
-    .btn-login, .btn-register, .btn-profile, .btn-inventory, .btn-admin, .btn-logout {
-        padding: 5px 8px;
-        font-size: 0.8rem;
-        height: 30px;
-    }
-    
-    .btn-login {
-        min-width: 55px;
-    }
-    
-    .btn-register {
-        min-width: 85px;
-    }
-    
-    /* Скрываем текст, оставляем только иконки на очень маленьких экранах */
-    @media (max-width: 480px) {
-        .btn-login span, .btn-register span {
-            display: none; /* Скрываем текст */
-        }
-        
-        .btn-login, .btn-register {
-            min-width: 40px;
-            justify-content: center;
-            padding: 5px;
-        }
-        
-        .btn-login i, .btn-register i {
-            margin: 0;
-            font-size: 1rem;
-        }
-        
-        .btn-profile span {
-            display: none; /* Скрываем имя пользователя */
-        }
-        
-        .btn-profile {
-            min-width: 40px;
-            justify-content: center;
-        }
-    }
+.btn-logout:hover {
+    background: rgba(255, 71, 87, 0.1);
 }
 
 /* МЕНЮ ТОГГЛ */
@@ -166,65 +212,7 @@
     margin-left: 10px;
 }
 
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
-    }
-    
-    .nav-menu {
-        position: fixed;
-        top: 60px;
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - 60px);
-        background: rgba(10, 10, 10, 0.98);
-        backdrop-filter: blur(10px);
-        flex-direction: column;
-        padding: 30px 20px;
-        transition: left 0.3s;
-        gap: 15px;
-        align-items: flex-start;
-        z-index: 1000;
-        overflow-y: auto;
-    }
-    
-    .nav-menu.active {
-        left: 0;
-    }
-    
-    .nav-auth {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 20px;
-        gap: 10px;
-        align-items: stretch;
-    }
-    
-    .btn-login, .btn-register, .btn-profile, .btn-inventory, .btn-admin, .btn-logout {
-        width: 100%;
-        justify-content: center;
-        text-align: center;
-        padding: 8px 15px;
-        height: 36px;
-    }
-    
-    .btn-login span, .btn-register span, .btn-profile span {
-        display: inline; /* Показываем текст в мобильном меню */
-    }
-}
-
-/* БАДЖ БАЛАНСА - УМЕНЬШАЕМ */
-.balance-badge {
-    background: linear-gradient(45deg, #6c63ff, #ff6584);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    margin-left: 4px;
-}
-
-/* ГЕРОЙ СЕКЦИЯ - АДАПТИВНАЯ */
+/* ГЕРОЙ СЕКЦИЯ */
 .hero {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                 url('https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
@@ -294,44 +282,11 @@
     color: #6c63ff;
 }
 
-@media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2rem;
-    }
-    
-    .hero p {
-        font-size: 1rem;
-    }
-    
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .btn-primary, .btn-secondary {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
-    }
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-3px);
 }
 
-@media (max-width: 480px) {
-    .hero h1 {
-        font-size: 1.7rem;
-    }
-    
-    .hero p {
-        font-size: 0.95rem;
-    }
-    
-    .btn-primary, .btn-secondary {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-    }
-}
-
-/* СТАТИСТИКА - АДАПТИВНАЯ */
+/* СТАТИСТИКА - БЕЗ ФЕЙКОВЫХ ЦИФР */
 .stats {
     padding: 60px 15px;
     background: #111;
@@ -382,35 +337,7 @@
     margin-top: 8px;
 }
 
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
-    }
-    
-    .stat-card {
-        padding: 20px 10px;
-    }
-    
-    .stat-card h3 {
-        font-size: 1.8rem;
-        min-height: 45px;
-    }
-    
-    .stat-card i {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-}
-
-/* КЕЙСЫ - АДАПТИВНЫЕ */
+/* КЕЙСЫ */
 .cases-preview {
     padding: 60px 15px;
     max-width: 1200px;
@@ -505,36 +432,11 @@
     font-size: 0.95rem;
 }
 
-@media (max-width: 768px) {
-    .cases-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 20px;
-    }
-    
-    .case-image {
-        height: 160px;
-        font-size: 3rem;
-    }
-    
-    .cases-preview h2 {
-        font-size: 2rem;
-        margin-bottom: 30px;
-    }
+.btn-open-case:hover {
+    opacity: 0.9;
 }
 
-@media (max-width: 480px) {
-    .cases-grid {
-        grid-template-columns: 1fr;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-    
-    .case-card {
-        max-width: 100%;
-    }
-}
-
-/* ФУТЕР - АДАПТИВНЫЙ */
+/* ФУТЕР */
 footer {
     background: #0a0a0a;
     padding: 40px 15px 30px;
@@ -586,18 +488,7 @@ footer {
     font-size: 0.85rem;
 }
 
-@media (max-width: 768px) {
-    .footer-links {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .footer-links a {
-        font-size: 0.95rem;
-    }
-}
-
-/* УВЕДОМЛЕНИЯ - АДАПТИВНЫЕ */
+/* УВЕДОМЛЕНИЯ */
 .notification {
     position: fixed;
     top: 15px;
@@ -653,19 +544,15 @@ footer {
     to { transform: translateX(0); opacity: 1; }
 }
 
-@media (max-width: 480px) {
-    .notification {
-        top: 10px;
-        right: 10px;
-        left: 10px;
-        width: auto;
-        max-width: none;
-        padding: 10px 12px;
-    }
-    
-    .notification span {
-        font-size: 0.85rem;
-    }
+/* БАДЖ БАЛАНСА */
+.balance-badge {
+    background: linear-gradient(45deg, #6c63ff, #ff6584);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 4px;
 }
 
 /* ЛОАДЕР СТАТИСТИКИ */
@@ -682,4 +569,199 @@ footer {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding: 30px 20px;
+        transition: left 0.3s;
+        gap: 15px;
+        align-items: flex-start;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-auth {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .btn-login, .btn-register, .btn-profile, .btn-inventory, .btn-admin, .btn-logout {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        padding: 8px 15px;
+        height: 36px;
+    }
+    
+    .btn-login span, .btn-register span, .btn-profile span {
+        display: inline;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .stat-card {
+        padding: 20px 10px;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.8rem;
+        min-height: 45px;
+    }
+    
+    .stat-card i {
+        font-size: 2rem;
+    }
+    
+    .cases-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    
+    .case-image {
+        height: 160px;
+        font-size: 3rem;
+    }
+    
+    .cases-preview h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .footer-links a {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo span {
+        font-size: 1.1rem;
+    }
+    
+    .hero h1 {
+        font-size: 1.7rem;
+    }
+    
+    .hero p {
+        font-size: 0.95rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .cases-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .case-card {
+        max-width: 100%;
+    }
+    
+    .nav-container {
+        padding: 0 10px;
+    }
+    
+    .hero-buttons {
+        gap: 10px;
+    }
+    
+    /* На очень маленьких экранах скрываем текст в кнопках */
+    @media (max-width: 360px) {
+        .btn-login span, .btn-register span {
+            display: none;
+        }
+        
+        .btn-login, .btn-register {
+            min-width: 40px;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .btn-login i, .btn-register i {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .btn-profile span {
+            display: none;
+        }
+        
+        .btn-profile {
+            min-width: 40px;
+            justify-content: center;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: none;
+        padding: 10px 12px;
+    }
+    
+    .notification span {
+        font-size: 0.85rem;
+    }
 }
