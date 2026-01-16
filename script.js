@@ -1,7 +1,7 @@
 // Основные переменные для работы сайта
 let currentUser = null;
 let casesData = [];
-const GOOGLE_SHEETS_API = 'https://script.google.com/macros/s/AKfycbyL6rL9y5P-FEZTBQclG1jg6hOhXxfmF3unE2FJQG5UPTrfRX7BpJi9arrPznfm9AOe/exec';
+const GOOGLE_SHEETS_API = 'https://script.google.com/macros/s/AKfycbx08LjFIWFZlBPwH_oihZ7MqpbKH-zYT5OC1dPqUtig6WaStSVCIZ2j1fBpwlbhfHB6/exec';
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
