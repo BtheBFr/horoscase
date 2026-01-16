@@ -2,28 +2,55 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ВАЖНО: Правильный viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>HOROSCASE - Торговая площадка кейсов</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Мета-теги для мобильных -->
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        /* Дополнительные адаптивные стили */
+        @media (max-width: 360px) {
+            .logo span {
+                font-size: 1.1rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Исправление горизонтального скролла */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+    </style>
 </head>
 <body>
+    <!-- Навигация -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <i class="fas fa-gem"></i>
                 <span>HOROSCASE</span>
-            </div>
+            </a>
             
             <div class="nav-menu" id="navMenu">
                 <a href="#"><i class="fas fa-home"></i> Главная</a>
                 <a href="#cases"><i class="fas fa-box"></i> Кейсы</a>
                 <a href="#market"><i class="fas fa-store"></i> Маркет</a>
                 <a href="#leaderboard"><i class="fas fa-trophy"></i> Топ</a>
-                <a href="#inventory"><i class="fas fa-backpack"></i> Инвентарь</a>
-                <div class="nav-auth">
-                    <a href="auth.html" class="btn-login"><i class="fas fa-user"></i> Войти</a>
-                    <a href="auth.html?register=true" class="btn-register">Регистрация</a>
+                <div class="nav-auth" id="navAuth">
+                    <!-- Здесь будут кнопки Войти/Регистрация -->
                 </div>
             </div>
             
@@ -33,6 +60,7 @@
         </div>
     </nav>
 
+    <!-- Основной контент -->
     <main>
         <section class="hero">
             <div class="hero-content">
@@ -49,17 +77,17 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-box-open"></i>
-                    <h3>1,234</h3>
+                    <h3 id="statsCases">0</h3>
                     <p>Кейсов открыто сегодня</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
-                    <h3>5,678</h3>
+                    <h3 id="statsTraders">0</h3>
                     <p>Активных трейдеров</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-gem"></i>
-                    <h3>890</h3>
+                    <h3 id="statsItems">0</h3>
                     <p>Редких предметов</p>
                 </div>
             </div>
@@ -68,7 +96,7 @@
         <section class="cases-preview" id="cases">
             <h2>Популярные кейсы</h2>
             <div class="cases-grid" id="casesGrid">
-                <!-- Сюда загружаются кейсы -->
+                <!-- Кейсы загружаются через JS -->
             </div>
         </section>
     </main>
@@ -84,7 +112,7 @@
                 <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
                 <a href="#"><i class="fab fa-discord"></i> Discord</a>
             </div>
-            <p class="copyright">© 2026 HOROSCASE. Все права защищены.</p>
+            <p class="copyright">© 2024 HOROSCASE. Все права защищены.</p>
         </div>
     </footer>
 
