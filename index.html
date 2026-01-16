@@ -6,15 +6,14 @@
     <title>HOROSCASE - Торговая площадка кейсов</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Подключаем красивый шрифт -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Russo+One&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#0a0a0a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         /* Дополнительные адаптивные стили */
         @media (max-width: 360px) {
             .logo span { font-size: 1.1rem; }
-            .hero h1 { font-size: 1.5rem; }
-            .hero p { font-size: 0.9rem; }
+            .hero h1 { font-size: 1.8rem; }
         }
         html, body {
             overflow-x: hidden;
@@ -33,10 +32,10 @@
             </a>
             
             <div class="nav-menu" id="navMenu">
-                <a href="#"><i class="fas fa-home"></i> Главная</a>
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="#cases"><i class="fas fa-box"></i> Кейсы</a>
-                <a href="#market"><i class="fas fa-store"></i> Маркет</a>
-                <a href="#leaderboard"><i class="fas fa-trophy"></i> Топ</a>
+                <a href="#" class="market-link"><i class="fas fa-store"></i> Маркет</a>
+                <a href="#" class="top-link"><i class="fas fa-trophy"></i> Топ</a>
                 <div class="nav-auth" id="navAuth">
                     <!-- Кнопки загружаются через JS -->
                 </div>
@@ -52,11 +51,11 @@
     <main>
         <section class="hero">
             <div class="hero-content">
-                <h1>Открывай кейсы. Получай скины. Стань лидером.</h1>
-                <p>CS:GO, Dota 2, Rust и другие игры</p>
+                <h1>🔥 ОТКРЫВАЙ КЕЙСЫ.<br>ПОЛУЧАЙ СКИНЫ.<br>СТАНЬ ЛИДЕРОМ. 🔥</h1>
+                <p>🎮 CS:GO • Dota 2 • Rust • и другие игры 🎮</p>
                 <div class="hero-buttons">
-                    <a href="#cases" class="btn-primary">Открыть кейс <i class="fas fa-arrow-right"></i></a>
-                    <a href="#market" class="btn-secondary">Торговать <i class="fas fa-exchange-alt"></i></a>
+                    <a href="#cases" class="btn-primary">🎁 Открыть кейс <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="btn-secondary trade-btn">💰 Торговать <i class="fas fa-exchange-alt"></i></a>
                 </div>
             </div>
         </section>
@@ -82,7 +81,7 @@
         </section>
 
         <section class="cases-preview" id="cases">
-            <h2>Популярные кейсы</h2>
+            <h2>🎯 ПОПУЛЯРНЫЕ КЕЙСЫ</h2>
             <div class="cases-grid" id="casesGrid">
                 <!-- Кейсы загружаются через JS -->
             </div>
@@ -100,7 +99,7 @@
                 <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
                 <a href="#"><i class="fab fa-discord"></i> Discord</a>
             </div>
-            <p class="copyright">© 2024 HOROSCASE. Все права защищены.</p>
+            <p class="copyright">© 2026 HOROSCASE. Все права защищены.</p>
         </div>
     </footer>
 
