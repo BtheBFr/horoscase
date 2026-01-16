@@ -1,6 +1,7 @@
 // Основные переменные
 let currentUser = null;
 let casesData = [];
+const GIST_URL = 'https://gist.githubusercontent.com/BtheBFr/1c8f02d1e8e5554f42ea3e69c27323ad/raw/';
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
@@ -13,11 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Настройка адаптивного меню
     setupResponsiveMenu();
     
-    // Настройка кнопки "Торговать"
-    setupTradeButton();
+    // Настройка кнопок для неавторизованных
+    setupGuestButtons();
     
-    // Загружаем реальную статистику
-    loadRealStats();
+    // Загружаем реальную статистику из Gist
+    loadStatsFromGist();
     
     // Исправление мобильного viewport
     fixMobileViewport();
@@ -41,7 +42,7 @@ function fixMobileViewport() {
     }
 }
 
-// Адаптивное меню
+// Настройка адаптивного меню
 function setupResponsiveMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
@@ -49,7 +50,6 @@ function setupResponsiveMenu() {
     if (menuToggle && navMenu) {
         menuToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
-            // Анимация бургер-меню
             const icon = this.querySelector('i');
             if (icon.classList.contains('fa-bars')) {
                 icon.classList.remove('fa-bars');
@@ -84,6 +84,44 @@ function setupResponsiveMenu() {
     adaptButtonsForMobile();
 }
 
+// ФИКС: Кнопки Маркет и Топ для неавторизованных
+function setupGuestButtons() {
+    // Кнопка "Торговать" на главной
+    const tradeBtn = document.querySelector('.trade-btn');
+    if (tradeBtn) {
+        tradeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (!localStorage.getItem('horoscase_token')) {
+                showNotification('❌ Для торговли нужен аккаунт', 'warning');
+                setTimeout(() => {
+                    window.location.href = 'auth.html?register=true';
+                }, 1500);
+                return false;
+            }
+            
+            showNotification('✅ Торговая площадка скоро будет доступна', 'info');
+        });
+    }
+    
+    // Кнопки Маркет и Топ в навигации
+    const marketLinks = document.querySelectorAll('.market-link, .top-link');
+    marketLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (!localStorage.getItem('horoscase_token')) {
+                showNotification('🔒 Эта функция доступна только авторизованным пользователям', 'warning');
+                setTimeout(() => {
+                    window.location.href = 'auth.html?register=true';
+                }, 1500);
+            } else {
+                showNotification('⚡ Функция скоро будет доступна', 'info');
+            }
+        });
+    });
+}
+
 // Адаптация кнопок под мобильные
 function adaptButtonsForMobile() {
     const isMobile = window.innerWidth <= 768;
@@ -109,8 +147,8 @@ function adaptButtonsForMobile() {
         }
         
         const balanceText = isMobile ? 
-            `<span class="balance-badge">${balance}</span>` :
-            `<span class="balance-badge">${balance} ₽</span>`;
+            `<span class="balance-badge">${formatBalance(balance)}</span>` :
+            `<span class="balance-badge">${formatBalance(balance)} ₽</span>`;
         
         navAuth.innerHTML = `
             ${adminBtn}
@@ -120,7 +158,7 @@ function adaptButtonsForMobile() {
             </a>
             <a href="profile.html" class="btn-profile" title="${username}">
                 <i class="fas fa-user-circle"></i>
-                ${!isMobile ? username : ''}
+                ${!isMobile ? truncateText(username, 12) : ''}
             </a>
             <button onclick="logout()" class="btn-logout" title="Выйти">
                 <i class="fas fa-sign-out-alt"></i>
@@ -151,26 +189,6 @@ function adaptButtonsForMobile() {
 window.addEventListener('resize', function() {
     adaptButtonsForMobile();
 });
-
-// ФИКС: Кнопка "Торговать" отправляет на регистрацию
-function setupTradeButton() {
-    const tradeBtn = document.querySelector('.btn-secondary');
-    if (tradeBtn && tradeBtn.textContent.includes('Торговать')) {
-        tradeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            if (!localStorage.getItem('horoscase_token')) {
-                showNotification('Для торговли нужен аккаунт', 'warning');
-                setTimeout(() => {
-                    window.location.href = 'auth.html?register=true';
-                }, 1500);
-                return false;
-            }
-            
-            showNotification('Торговая площадка скоро будет доступна', 'info');
-        });
-    }
-}
 
 // Загрузка кейсов
 async function loadCases() {
@@ -203,7 +221,7 @@ function displayCases(cases) {
     
     casesGrid.innerHTML = cases.map(caseItem => `
         <div class="case-card">
-            <div class="case-image" style="background: linear-gradient(45deg, ${caseItem.color || '#222'}, #333)">
+            <div class="case-image" style="background: linear-gradient(135deg, ${caseItem.color || '#222'}, #333)">
                 <i class="${caseItem.icon || 'fas fa-box'}"></i>
             </div>
             <div class="case-content">
@@ -219,133 +237,56 @@ function displayCases(cases) {
     `).join('');
 }
 
-// РЕАЛЬНАЯ СТАТИСТИКА (не фейковая)
-async function loadRealStats() {
-    // Показываем загрузку
-    document.getElementById('statsCases').innerHTML = '<div class="stat-loader"></div>';
-    document.getElementById('statsTraders').innerHTML = '<div class="stat-loader"></div>';
-    document.getElementById('statsItems').innerHTML = '<div class="stat-loader"></div>';
-    
+// ЗАГРУЗКА СТАТИСТИКИ ИЗ GIST
+async function loadStatsFromGist() {
     try {
-        // Загружаем реальные данные из файлов
-        const users = await loadUsersData();
-        const cases = await loadCasesData();
-        const items = await loadItemsData();
+        // Показываем загрузку
+        document.getElementById('statsCases').innerHTML = '<div class="stat-loader"></div>';
+        document.getElementById('statsTraders').innerHTML = '<div class="stat-loader"></div>';
+        document.getElementById('statsItems').innerHTML = '<div class="stat-loader"></div>';
         
-        // Считаем статистику НА ОСНОВЕ ДАННЫХ
-        const openedToday = calculateOpenedToday(users);
-        const activeTraders = calculateActiveTraders(users);
-        const rareItems = calculateRareItems(items);
+        // Загружаем данные из Gist
+        const response = await fetch(GIST_URL + '?t=' + Date.now()); // Добавляем timestamp чтобы избежать кэша
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
-        // Обновляем с анимацией
-        animateCounter('statsCases', openedToday);
-        animateCounter('statsTraders', activeTraders);
-        animateCounter('statsItems', rareItems);
+        const data = await response.json();
+        
+        // Проверяем структуру данных
+        if (data && typeof data === 'object') {
+            // Пытаемся получить значения разными способами (для разных форматов JSON)
+            const cases = data.cases || data.cases_opened || data.opened_cases || 485;
+            const traders = data.traders || data.active_traders || data.traders_count || 100;
+            const items = data.items || data.rare_items || data.items_count || 150;
+            
+            // Обновляем с анимацией
+            animateCounter('statsCases', parseInt(cases) || 485);
+            animateCounter('statsTraders', parseInt(traders) || 100);
+            animateCounter('statsItems', parseInt(items) || 150);
+            
+            console.log('Статистика загружена из Gist:', { cases, traders, items });
+        } else {
+            throw new Error('Неверный формат данных в Gist');
+        }
         
     } catch (error) {
-        console.error('Ошибка загрузки статистики:', error);
-        // Значения по умолчанию (не фейковые 1,234, 5,678, 890)
-        document.getElementById('statsCases').textContent = '0';
-        document.getElementById('statsTraders').textContent = '0';
-        document.getElementById('statsItems').textContent = '0';
+        console.error('Ошибка загрузки статистики из Gist:', error);
+        
+        // Резервные значения
+        const backupValues = {
+            cases: 485,
+            traders: 100,
+            items: 150
+        };
+        
+        // Показываем резервные значения
+        document.getElementById('statsCases').textContent = backupValues.cases;
+        document.getElementById('statsTraders').textContent = backupValues.traders;
+        document.getElementById('statsItems').textContent = backupValues.items;
+        
+        showNotification('⚠️ Используем базовую статистику. Обновите Gist файл.', 'warning');
     }
-}
-
-async function loadUsersData() {
-    try {
-        const response = await fetch('/data/users.json');
-        if (response.ok) {
-            const data = await response.json();
-            return Object.values(data).filter(u => u.email);
-        }
-    } catch (error) {
-        console.log('Не удалось загрузить users.json, используем пустой массив');
-    }
-    return [];
-}
-
-async function loadCasesData() {
-    try {
-        const response = await fetch('/data/cases.json');
-        if (response.ok) {
-            const data = await response.json();
-            return [
-                ...(data.csgo_cases || []),
-                ...(data.dota_cases || []),
-                ...(data.rust_cases || [])
-            ];
-        }
-    } catch (error) {
-        console.log('Не удалось загрузить cases.json, используем пустой массив');
-    }
-    return [];
-}
-
-async function loadItemsData() {
-    try {
-        const response = await fetch('/data/items.json');
-        if (response.ok) {
-            const data = await response.json();
-            return [
-                ...(data.csgo_items || []),
-                ...(data.dota_items || []),
-                ...(data.rust_items || [])
-            ];
-        }
-    } catch (error) {
-        console.log('Не удалось загрузить items.json, используем пустой массив');
-    }
-    return [];
-}
-
-function calculateOpenedToday(users) {
-    // Берем реальное количество пользователей и корректируем по времени
-    const userCount = users.length || 1;
-    const hour = new Date().getHours();
-    
-    // Базовое значение: чем больше пользователей, тем больше открытий
-    let base = userCount * 3;
-    
-    // Корректируем по времени суток
-    if (hour >= 16 && hour <= 22) base *= 2;  // Вечером больше активности
-    if (hour >= 20 && hour <= 23) base *= 3;  // Поздним вечером еще больше
-    if (hour >= 0 && hour <= 6) base *= 0.5;  // Ночью меньше
-    
-    // Добавляем небольшую случайность
-    const random = Math.floor(Math.random() * userCount * 2);
-    const result = Math.floor(base + random);
-    
-    // Минимальное значение
-    return result > 0 ? result : Math.floor(Math.random() * 50) + 10;
-}
-
-function calculateActiveTraders(users) {
-    if (users.length === 0) {
-        // Если нет данных о пользователях, реалистичное минимальное значение
-        return Math.floor(Math.random() * 100) + 50;
-    }
-    
-    // 30-50% пользователей активны (реалистичный процент)
-    const activePercent = 30 + Math.floor(Math.random() * 21);
-    const result = Math.floor(users.length * (activePercent / 100));
-    
-    // Минимальное значение
-    return result > 0 ? result : Math.floor(Math.random() * 100) + 30;
-}
-
-function calculateRareItems(items) {
-    if (items.length === 0) {
-        // Если нет данных, реалистичное минимальное значение
-        return Math.floor(Math.random() * 200) + 100;
-    }
-    
-    // Считаем реальные редкие предметы (эпические и легендарные)
-    const rareItems = items.filter(item => 
-        item.rarity === 'epic' || item.rarity === 'legendary'
-    ).length;
-    
-    // Если редких предметов нет, берем процент от всех
-    return rareItems > 0 ? rareItems : Math.floor(items.length * 0.25);
 }
 
 // Анимация счетчика
@@ -376,7 +317,7 @@ function animateCounter(elementId, targetValue) {
 // Обработка открытия кейса
 function handleOpenCase(caseId) {
     if (!localStorage.getItem('horoscase_token')) {
-        showNotification('Для открытия кейсов войдите в аккаунт', 'warning');
+        showNotification('🔐 Для открытия кейсов войдите в аккаунт', 'warning');
         setTimeout(() => {
             window.location.href = 'auth.html';
         }, 1500);
@@ -385,13 +326,13 @@ function handleOpenCase(caseId) {
     
     const caseItem = casesData.find(c => c.id === caseId);
     if (!caseItem) {
-        showNotification('Кейс не найден', 'error');
+        showNotification('❌ Кейс не найден', 'error');
         return;
     }
     
     const balance = parseInt(localStorage.getItem('user_balance') || '0');
     if (balance < caseItem.price_rub) {
-        showNotification(`Недостаточно средств. Нужно ${caseItem.price_rub} ₽`, 'error');
+        showNotification(`💰 Недостаточно средств. Нужно ${caseItem.price_rub} ₽`, 'error');
         return;
     }
     
@@ -400,7 +341,7 @@ function handleOpenCase(caseId) {
 
 // Открытие кейса
 function openCase(caseItem) {
-    showNotification(`Открываем ${caseItem.name}...`, 'info');
+    showNotification(`🎁 Открываем ${caseItem.name}...`, 'info');
     
     // Снимаем деньги
     const balance = parseInt(localStorage.getItem('user_balance') || '0');
@@ -415,8 +356,13 @@ function openCase(caseItem) {
     
     // Показываем результат
     setTimeout(() => {
-        const items = ['Обычный скин', 'Редкий скин', 'Эпический скин', 'Легендарный предмет!'];
-        const chances = [60, 25, 10, 5]; // Реалистичные шансы
+        const items = [
+            { name: 'Обычный скин 🎨', value: caseItem.price_rub * 0.5 },
+            { name: 'Редкий скин ⭐', value: caseItem.price_rub * 1.5 },
+            { name: 'Эпический скин ✨', value: caseItem.price_rub * 3 },
+            { name: 'Легендарный предмет! 💎', value: caseItem.price_rub * 10 }
+        ];
+        const chances = [50, 30, 15, 5];
         
         const random = Math.random() * 100;
         let cumulative = 0;
@@ -430,11 +376,11 @@ function openCase(caseItem) {
             }
         }
         
-        showNotification(`Вы получили: ${selectedItem}`, 'success');
+        showNotification(`🎉 Вы получили: ${selectedItem.name} (${selectedItem.value} ₽)`, 'success');
         
         // Обновляем статистику (открытие кейса)
         setTimeout(() => {
-            loadRealStats();
+            loadStatsFromGist();
         }, 1000);
         
     }, 2000);
@@ -497,8 +443,8 @@ function updateUIForLoggedInUser() {
     }
     
     const balanceText = isMobile ? 
-        `<span class="balance-badge">${balance}</span>` :
-        `<span class="balance-badge">${balance} ₽</span>`;
+        `<span class="balance-badge">${formatBalance(balance)}</span>` :
+        `<span class="balance-badge">${formatBalance(balance)} ₽</span>`;
     
     navAuth.innerHTML = `
         ${adminBtn}
@@ -508,7 +454,7 @@ function updateUIForLoggedInUser() {
         </a>
         <a href="profile.html" class="btn-profile" title="${currentUser.username}">
             <i class="fas fa-user-circle"></i>
-            ${!isMobile ? currentUser.username : ''}
+            ${!isMobile ? truncateText(currentUser.username, 12) : ''}
         </a>
         <button onclick="logout()" class="btn-logout" title="Выйти">
             <i class="fas fa-sign-out-alt"></i>
@@ -518,26 +464,41 @@ function updateUIForLoggedInUser() {
 }
 
 function logout() {
-    localStorage.removeItem('horoscase_token');
-    localStorage.removeItem('user_email');
-    localStorage.removeItem('user_username');
-    localStorage.removeItem('user_balance');
-    localStorage.removeItem('is_admin');
-    localStorage.removeItem('user_inventory');
-    
-    currentUser = null;
-    window.location.reload();
+    if (confirm('Вы уверены, что хотите выйти?')) {
+        localStorage.removeItem('horoscase_token');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('user_username');
+        localStorage.removeItem('user_balance');
+        localStorage.removeItem('is_admin');
+        localStorage.removeItem('user_inventory');
+        
+        currentUser = null;
+        window.location.reload();
+    }
 }
 
 // Вспомогательные функции
 function getGameName(gameCode) {
     const games = {
-        'csgo': 'CS:GO',
-        'dota2': 'Dota 2',
-        'rust': 'Rust',
-        'tf2': 'Team Fortress 2'
+        'csgo': '🎮 CS:GO',
+        'dota2': '⚔️ Dota 2',
+        'rust': '🛡️ Rust',
+        'tf2': '💥 Team Fortress 2'
     };
     return games[gameCode] || gameCode;
+}
+
+function formatBalance(balance) {
+    if (balance >= 1000000) {
+        return (balance / 1000000).toFixed(1) + 'M';
+    } else if (balance >= 1000) {
+        return (balance / 1000).toFixed(1) + 'K';
+    }
+    return balance;
+}
+
+function truncateText(text, maxLength) {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 }
 
 function getTestCases() {
@@ -586,6 +547,7 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
+    // Автоудаление через 5 секунд
     setTimeout(() => {
         if (notification.parentElement) {
             notification.remove();
@@ -603,4 +565,14 @@ document.addEventListener('click', function(e) {
             handleOpenCase(caseId);
         }
     }
+});
+
+// Обновление статистики каждые 5 минут
+setInterval(() => {
+    loadStatsFromGist();
+}, 5 * 60 * 1000);
+
+// При фокусе окна обновляем статистику
+window.addEventListener('focus', () => {
+    loadStatsFromGist();
 });
